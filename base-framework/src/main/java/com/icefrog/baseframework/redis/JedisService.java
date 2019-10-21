@@ -19,9 +19,7 @@ package com.icefrog.baseframework.redis;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.*;
 import redis.clients.jedis.params.geo.GeoRadiusParam;
@@ -32,21 +30,43 @@ import redis.clients.jedis.params.sortedset.ZIncrByParams;
  * JRedis 方式操作缓存数据
  */
 @Service("jedisService")
-//@ConditionalOnClass(JedisPool.class)
 public class JedisService {
- 
+
+    @Value("${spring.redis.host}")
+    private String ip;
+
+    @Value("${spring.redis.port:6379}")
+    private Integer port;
+
+    @Value("${spring.redis.timeout:3000}")
+    private Integer timeout;
+
+    @Value("${spring.redis.password}")
+    private String password;
+
+    @Value("${spring.redis.pool.max-idle:10}")
+    private Integer maxIdle;
+
+    @Value("${spring.redis.pool.min-idle:1}")
+    private Integer minIdle;
+
+    @Value("${spring.redis.pool.max-wait:-1}")
+    private Long maxWaitMillis;
+
     /**
      * JedisPool
      */
-    //@Autowired(required = false)
     private JedisPool jedisPool;
 
     public JedisService(){
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        // TODO 暂时硬编码
-        this.jedisPool = new JedisPool(jedisPoolConfig, "192.168.31.137", 6379, 2000, "icefrog");
+        jedisPoolConfig.setMaxIdle(maxIdle);
+        jedisPoolConfig.setMinIdle(minIdle);
+        jedisPoolConfig.setMaxWaitMillis(maxWaitMillis);
+
+        this.jedisPool = new JedisPool(jedisPoolConfig, ip, port, timeout, password);
     }
-    
+
     /**
      * Set the string value as value of the key. The string can't be longer than 1073741824 bytes (1
      * GB). <p> Time complexity: O(1)
