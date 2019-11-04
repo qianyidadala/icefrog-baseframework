@@ -16,6 +16,8 @@
 
 package com.icefrog.baseframework.enums;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 
 /***
@@ -44,10 +46,11 @@ public interface IEnum {
     String getDescription();
 
     /***
-     * 比较两个类型枚举是否相等
+     * 比较两个类型枚举是否相等。 取决于this#getValue();
      * @param iEnum 需要比较的枚举
      * @return 如果相等，返回true。 否则返回false
      */
-    boolean equals(IEnum iEnum);
-
+    default boolean equals(IEnum iEnum) {
+        return StringUtils.equals(this.getValue(), iEnum.getValue());
+    }
 }
