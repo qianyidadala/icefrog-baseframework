@@ -43,4 +43,11 @@ public interface IEnum {
      */
     String getDescription();
 
+    /***
+     * 比较两个类型枚举是否相等
+     * @param iEnum 需要比较的枚举
+     * @return 如果相等，返回true。 否则返回false
+     */
+    boolean equals(IEnum iEnum);
+
 }
